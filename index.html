@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>借款额度申请系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a3a8f 0%, #0d6efd 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #1a3a8f 0%, #0d6efd 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+            outline: none;
+        }
+        
+        .form-note {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #1a3a8f 0%, #0d6efd 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+        }
+        
+        .result-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .result-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: #e8f4ff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: #0d6efd;
+        }
+        
+        .amount {
+            font-size: 48px;
+            font-weight: 800;
+            color: #1a3a8f;
+            margin: 20px 0;
+        }
+        
+        .amount-label {
+            font-size: 18px;
+            color: #6c757d;
+        }
+        
+        .result-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .result-details h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .btn-back {
+            padding: 12px 25px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-back:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .security-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .security-note i {
+            margin-right: 10px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .count-up {
+            animation: countUp 1.5s ease-out;
+        }
+        
+        .form-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>借款额度申请</h1>
+            <p>填写基本信息，获取您的专属借款额度</p>
+        </div>
+        
+        <div class="content">
+            <!-- 表单部分 -->
+            <div class="section active" id="form-section">
+                <form id="loan-form">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" class="form-control" id="name" placeholder="请输入您的真实姓名">
+                        <div class="form-error" id="name-error">请输入有效的姓名（2-10个汉字）</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id-card">身份证号码</label>
+                        <input type="text" class="form-control" id="id-card" placeholder="请输入18位身份证号码">
+                        <div class="form-error" id="id-card-error">请输入有效的身份证号码</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">手机号码</label>
+                        <input type="tel" class="form-control" id="phone" placeholder="请输入11位手机号码">
+                        <div class="form-error" id="phone-error">请输入有效的手机号码</div>
+                    </div>
+                    
+                    <div class="form-note">
+                        <p>我们承诺严格保护您的个人信息，仅用于信用评估</p>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">获取借款额度</button>
+                </form>
+                
+                <div class="loader" id="loader">
+                    <div class="loader-spinner"></div>
+                    <p>正在评估您的信用，请稍候...</p>
+                </div>
+            </div>
+            
+            <!-- 结果部分 -->
+            <div class="section" id="result-section">
+                <div class="result-container">
+                    <div class="result-icon">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    
+                    <h2>恭喜您获得借款额度</h2>
+                    <p>根据您的信用评估，我们为您提供以下专属额度</p>
+                    
+                    <div class="amount">
+                        ￥<span id="loan-amount">0</span>
+                    </div>
+                    <div class="amount-label">可借额度</div>
+                    
+                    <div class="result-details">
+                        <h3>申请信息</h3>
+                        <div class="detail-item">
+                            <span>姓名</span>
+                            <span id="result-name">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>身份证号</span>
+                            <span id="result-id">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>手机号码</span>
+                            <span id="result-phone">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>申请时间</span>
+                            <span id="result-time">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="security-note">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>银行级数据加密保护</span>
+                    </div>
+                    
+                    <button class="btn-back" onclick="showForm()">返回重新申请</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 显示表单页面
+        function showForm() {
+            document.getElementById('form-section').classList.add('active');
+            document.getElementById('result-section').classList.remove('active');
+            
+            // 重置表单
+            document.getElementById('loan-form').reset();
+        }
+        
+        // 表单验证
+        function validateForm() {
+            let isValid = true;
+            
+            // 验证姓名（2-10个汉字）
+            const name = document.getElementById('name').value;
+            const nameRegex = /^[\u4e00-\u9fa5]{2,10}$/;
+            if (!nameRegex.test(name)) {
+                document.getElementById('name-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('name-error').style.display = 'none';
+            }
+            
+            // 验证身份证号（简单验证）
+            const idCard = document.getElementById('id-card').value;
+            const idCardRegex = /^[1-9]\d{5}(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dX]$/;
+            if (!idCardRegex.test(idCard)) {
+                document.getElementById('id-card-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('id-card-error').style.display = 'none';
+            }
+            
+            // 验证手机号
+            const phone = document.getElementById('phone').value;
+            const phoneRegex = /^1[3-9]\d{9}$/;
+            if (!phoneRegex.test(phone)) {
+                document.getElementById('phone-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('phone-error').style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
+        // 生成随机借款额度（5000-100000之间）
+        function generateLoanAmount() {
+            // 生成5000-100000之间的随机数，以千为单位
+            const min = 5000;
+            const max = 100000;
+            const amount = Math.floor(Math.random() * (max - min + 1) + min);
+            
+            // 取整到千位
+            return Math.round(amount / 1000) * 1000;
+        }
+        
+        // 格式化金额显示
+        function formatAmount(amount) {
+            return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // 显示结果
+        function showResult(name, idCard, phone) {
+            // 显示加载动画
+            document.getElementById('loader').style.display = 'block';
+            
+            // 模拟评估过程
+            setTimeout(() => {
+                document.getElementById('form-section').classList.remove('active');
+                document.getElementById('result-section').classList.add('active');
+                document.getElementById('loader').style.display = 'none';
+                
+                // 显示用户信息
+                document.getElementById('result-name').textContent = name;
+                document.getElementById('result-id').textContent = idCard.replace(/(\d{4})\d{10}(\d{4})/, '$1**********$2');
+                document.getElementById('result-phone').textContent = phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+                
+                // 显示当前时间
+                const now = new Date();
+                document.getElementById('result-time').textContent = now.toLocaleString();
+                
+                // 生成并显示借款额度
+                const amount = generateLoanAmount();
+                const formattedAmount = formatAmount(amount);
+                
+                // 数字滚动动画
+                const amountElement = document.getElementById('loan-amount');
+                amountElement.textContent = '0';
+                
+                let current = 0;
+                const increment = Math.ceil(amount / 100);
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= amount) {
+                        current = amount;
+                        clearInterval(timer);
+                    }
+                    amountElement.textContent = formatAmount(current);
+                }, 20);
+            }, 2000);
+        }
+        
+        // 表单提交事件
+        document.getElementById('loan-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                const name = document.getElementById('name').value;
+                const idCard = document.getElementById('id-card').value;
+                const phone = document.getElementById('phone').value;
+                
+                showResult(name, idCard, phone);
+            }
+        });
+    </script>
+</body>
+</html>
