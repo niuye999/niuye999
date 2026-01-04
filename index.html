@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>借款额度申请系统</title>
+    <title>信用卡额度申请系统</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -241,8 +241,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>借款额度申请</h1>
-            <p>填写基本信息，获取您的专属借款额度</p>
+            <h1>信用卡额度申请</h1>
+            <p>填写基本信息，获取您的专属信用额度</p>
         </div>
         
         <div class="content">
@@ -271,7 +271,7 @@
                         <p>我们承诺严格保护您的个人信息，仅用于信用评估</p>
                     </div>
                     
-                    <button type="submit" class="btn-submit">获取借款额度</button>
+                    <button type="submit" class="btn-submit">获取信用额度</button>
                 </form>
                 
                 <div class="loader" id="loader">
@@ -287,13 +287,13 @@
                         <i class="fas fa-piggy-bank"></i>
                     </div>
                     
-                    <h2>恭喜您获得借款额度</h2>
+                    <h2>恭喜您初审通过</h2>
                     <p>根据您的信用评估，我们为您提供以下专属额度</p>
                     
                     <div class="amount">
                         ￥<span id="loan-amount">0</span>
                     </div>
-                    <div class="amount-label">可借额度</div>
+                    <div class="amount-label">信用卡额度</div>
                     
                     <div class="result-details">
                         <h3>申请信息</h3>
@@ -373,10 +373,10 @@
             return isValid;
         }
         
-        // 生成随机借款额度（5000-100000之间）
+        // 生成随机信用卡额度（40000-100000之间）
         function generateLoanAmount() {
-            // 生成5000-100000之间的随机数，以千为单位
-            const min = 5000;
+            // 生成40000-100000之间的随机数，以千为单位
+            const min = 40000;
             const max = 100000;
             const amount = Math.floor(Math.random() * (max - min + 1) + min);
             
